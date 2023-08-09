@@ -1,54 +1,58 @@
-#!/usr/bin/python3
-""" importing cmd module to handle commands """
 import cmd
 
-
 class HBNBCommand(cmd.Cmd):
-    """
-    The HBNBCommand class represents cmd interpreter for the HBNB program.
-    It provides a command line interface for interacting with the program.
+    prompt = '(hbnb) '  # Custom prompt for the command line
 
-    Attributes:
-        prompt (str): The prompt string displayed to the user.
+    # Dictionary to simulate the database
+    objects = {}
 
-    Methods:
-        do_quit(arg): Exit the program.
-        do_EOF(arg): Exit the program.
-        emptyline(): Do nothing on empty line.
-    """
+    def do_create(self, args):
+        """Create command to create a new instance of BaseModel"""
+        args = args.split() # Split the arguments
+        if not args:
+            print("** class name missing **") # Check for missing class name
+            return
+        class_name = args[0]
+        if class_name != "BaseModel":
+            print("** class doesn't exist **") # Check for existing class name
+            return
+        obj = BaseModel()  # Create object, assuming BaseModel is defined elsewhere
+        obj.save()        # Save object to JSON, assuming save method is implemented
+        print(obj.id)     # Print the ID of the object
 
-    prompt = '(hbnb) '
+    def do_show(self, args):
+        """Show command to print the string representation of an instance"""
+        args = args.split() # Split the arguments
+        if len(args) == 0:
+            print("** class name missing **") # Check for missing class name
+            return
+        if args[0] != "BaseModel":
+            print("** class doesn't exist **") # Check for existing class name
+            return
+        if len(args) < 2:
+            print("** instance id missing **") # Check for missing ID
+            return
+        obj_key = args[0] + "." + args[1]
+        if obj_key not in self.objects:
+            print("** no instance found **") # Check if instance exists
+            return
+        print(self.objects[obj_key]) # Print the object
+
+    # Implement other commands like 'destroy', 'all', and 'update'
+    # ...
 
     def do_quit(self, arg):
-        """
-        Exit the program.
-
-        Args:
-            arg: The argument provided with the command.
-
-        Returns:
-            True: To exit the program.
-        """
+        """Quit command to exit the program"""
         return True
 
     def do_EOF(self, arg):
-        """
-        Exit the program.
-
-        Args:
-            arg: The argument provided with the command.
-
-        Returns:
-            True: To exit the program.
-        """
+        """EOF command to exit the program"""
         return True
 
     def emptyline(self):
-        """
-        Do nothing on empty line.
-        """
+        """An empty line + ENTER shouldn’t execute anything"""
         pass
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     HBNBCommand().cmdloop()
+
