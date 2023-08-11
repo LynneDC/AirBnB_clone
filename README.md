@@ -37,7 +37,8 @@ Setting 'theme' updated to 'dark'.
 
 ###Authors
 ROSELINE DANGAZELA @LynneDC
+JUDE NDUBUISI @JudeVector
 
 ###Contributors
 Roseline Dangazela
-Adeniji Olajide
+Jude Ndubuisi
