@@ -1,30 +1,32 @@
 #!/usr/bin/python3
 """ importing json module and"""
 import json
-from models.base_model import BaseModel
+#import models
 
 class FileStorage:
     __file_path = "file.json"
     __objects = {}
     def all(self):
-        return self.__objects
+        return FileStorage.__objects
     def new(self, obj):
         key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        self.__objects[key] = obj
+        FileStorage.__objects[key] = obj
     def save(self):
         data = {}
-        for key, value in self.__objects.items():
+        for key, value in FileStorage.__objects.items():
             data[key] = value.to_dict()
-        with open(self.__file_path, "w") as file:
+        with open(FileStorage.__file_path, "w", encoding="utf-8") as file:
             json.dump(data, file)
     def reload(self):
+        from models.base_model import BaseModel
+        data_classes = {"BaseModel": BaseModel}
         try:
-            with open(self.__file_path, "r") as file:
+            with open(FileStorage.__file_path, "r", encoding="utf-8") as file:
                 data = json.load(file)
-                for key, value in data.items():
-                    class_name, obj_id = key.split(".")
-                    cls = globals() [class_name]
-                    obj = cls(**value)
-                    self.__objects[key] = obj
-        except (FileNotFoundError, json.JSONDecodeError):
-            self.__objects = {}
+                for values in data.values():
+                    name = values["__class__"]
+                    
+                    obj = data_classes[name]
+                    self.new(obj(**values))
+        except FileNotFoundError:
+            return
