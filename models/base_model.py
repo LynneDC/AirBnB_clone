@@ -40,29 +40,20 @@ class BaseModel:
                             value = datetime.strptime(
                                 value, "%Y-%m-%dT%H:%M:%S.%f")
                     setattr(self, key, value)
-            """def __init__(self, *args, **kwargs):
-            if 'id' not in kwargs:
-            self.id = str(uuid.uuid4())
-            self.created_at = datetime.now().isoformat()
-            self.updated_at = datetime.now().isoformat()"""
-            #storage.new(self)
+
 
         else:
-            """if 'id' not in kwargs:
-                 self.id = str(uuid.uuid4())
-                 self.created_at = datetime.now().isoformat()
-                 self.updated_at = datetime.now().isoformat()
-                 storage.new(self)"""
+
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
             storage.new(self)
-            
+
 
     """public methods to modify public instances"""
     def save(self):
         self.updated_at = datetime.now()
-        
+
         storage.save()
         return "[{}] ({}) {}".format(
                         self.__class__.__name__,
@@ -78,13 +69,8 @@ class BaseModel:
         if isinstance(obj_dict["updated_at"], datetime):
             obj_dict["updated_at"] = obj_dict["updated_at"].isoformat()
         return obj_dict
-    """	
-    def to_dict(self):
-        obj_dict = self.__dict__
-        obj_dict["__class__"] = self.__class__.__name__
-        obj_dict["created_at"] = obj_dict["created_at"].isoformat()
-        obj_dict["updated_at"] = obj_dict["updated_at"].isoformat()
-        return obj_dict"""
+
+
 
     def __str__(self):
         return "[{}] ({}) {}".format(
