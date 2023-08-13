@@ -37,8 +37,8 @@ class HBNBCommand(cmd.Cmd):
         storage.new(obj)  # Add to FileStorage
         storage.save()    # Save to file.json
         print(obj.id)
-
-	def emptyline(self):
+        
+    def emptyline(self):
         """Do nothing upon receiving an empty line."""
         pass
 
@@ -66,9 +66,12 @@ class HBNBCommand(cmd.Cmd):
     # Implement other commands (destroy, all, update) here
 
     def do_quit(self, arg):
+        """Quit command to exit the program."""
         return True
 
     def do_EOF(self, arg):
+        """EOF signal to exit the program."""
+        print("")
         return True
 
     def do_all(self, line):
