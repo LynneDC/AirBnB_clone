@@ -1,71 +1,52 @@
 #!/usr/bin/python3
+"""Module for Base class
+Contains the Base class for the AirBnB clone console.
 """
-Import the `uuid` class for generating unique IDs
-Import the `datetime` class for representing the datetime of UUID creation
-"""
-import uuid
-from models import storage
-from datetime import datetime
 
-"""
-Def class BaseModel parent class for all attributes and methods.
-Public instance attributes:
-    - `id`: assigned with a UUID on creation
-    - `created_at`: current datetime of ID creation
-    - `updated_at`: current time of ID update
-Output format: [class_name] (id) dict
-Public instance methods:
-    - `save()`: updates `updated_at` with the current date
-    - `to_dict()`: returns a dictionary representation of the instance:
-        - `self.__dict__`: returns only the instance attributes
-        - `__class__`: added to the dictionary with the class name
-        - `created_at` and `updated_at`: converted to ISO format
-    - `object_dict`: dictionary representation of the instance
-"""
+import uuid
+from datetime import datetime
+from models import storage
 
 
 class BaseModel:
-    """Class initialization and data declaration"""
+
+    """Class for base model of object hierarchy."""
+
     def __init__(self, *args, **kwargs):
-        # If keyword arguments are provided
+        """Initialization of a Base instance.
+
+        Args:
+            - *args: list of arguments
+            - **kwargs: dict of key-values arguments
+        """
+
         if kwargs:
             for key, value in kwargs.items():
-                # Exclude the "__class__" attribute
+                if key == "created_at" or key == "updated_at":
+                    value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
                 if key != "__class__":
-                    if isinstance(value, str):
-                        # Convert "created_at" and "updated_at"
-                        # strings to datetime objects
-                        if key in ["created_at", "updated_at"]:
-                            value = datetime.strptime(
-                                value, "%Y-%m-%dT%H:%M:%S.%f")
                     setattr(self, key, value)
         else:
-            # Generate a new UUID for the "id" attribute
             self.id = str(uuid.uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = datetime.now()
-            storage.new(self)
-
-    """Public methods to modify public instance attributes"""
-    def save(self):
-        self.updated_at = datetime.now()
-        storage.save()
-        return "[{}] ({}) {}".format(
-            self.__class__.__name__, self.id, self.__dict__)
-
-    def to_dict(self):
-        obj_dict = self.__dict__.copy()
-        obj_dict["__class__"] = self.__class__.__name__
-
-        if isinstance(obj_dict["created_at"], datetime):
-            # Convert "created_at" to ISO format
-            obj_dict["created_at"] = obj_dict["created_at"].isoformat()
-
-        if isinstance(obj_dict["updated_at"], datetime):
-            # Convert "updated_at" to ISO format
-            obj_dict["updated_at"] = obj_dict["updated_at"].isoformat()
-        return obj_dict
+            self.created_at = self.updated_at = datetime.now()
 
     def __str__(self):
-        return "[{}] ({}) {}".format(
-            self.__class__.__name__, self.id, self.__dict__)
+        """Returns a human-readable string representation
+        of an instance."""
+        return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
+
+    def save(self):
+        """Updates the updated_at attribute
+        with the current datetime."""
+        self.updated_at = datetime.now()
+        storage.save()
+
+    def to_dict(self):
+        """ Create a copy of the instance's dictionary"""
+
+        dictionary = self.__dict__.copy()
+        dictionary["__class__"] = self.__class__.__name__
+        dictionary["created_at"] = self.created_at.isoformat()
+        dictionary["updated_at"] = self.updated_at.isoformat()
+        return dictionary
+

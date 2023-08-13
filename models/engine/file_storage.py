@@ -1,53 +1,60 @@
 #!/usr/bin/python3
-# Importing the json module
+"""Module for FileStorage class."""
 import json
 
-
 class FileStorage:
-    # Define the file path for storing data
+    """Class for serializtion and deserialization of base classes."""
     __file_path = "file.json"
-    # Store objects in a dictionary
     __objects = {}
 
     def all(self):
-        # Return all objects stored in the dictionary
-        return FileStorage.__objects
+        """Returns __objects dictionary."""
+        # TODO: should this be a copy()?
+        return self.__objects
 
     def new(self, obj):
-        # Generate a key based on the class name and object ID
+        """Sets new obj in __objects dictionary."""
+        # TODO: should these be more precise specifiers?
         key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        # Add the object to the dictionary using the generated key
-        FileStorage.__objects[key] = obj
+        self.__objects[key] = obj
 
     def save(self):
-        # Create an empty dictionary to store data
-        data = {}
-        # Iterate over the objects in the dictionary
-        for key, value in FileStorage.__objects.items():
-            # Convert each object to a dictionary representation
-            data[key] = value.to_dict()
-        # Write the data to the file in JSON format
-        with open(FileStorage.__file_path, "w", encoding="utf-8") as file:
-            json.dump(data, file)
+        """Serialzes __objects to JSON file."""
+        serialized_objects = {}
+        for key, obj in self.__objects.items():
+            serialized_objects[key] = obj.to_dict()
+        with open(self.__file_path, "w") as file:
+            json.dump(serialized_objects, file)
 
     def reload(self):
-        # Import the BaseModel class
+        """Returns a dictionary of valid classes and their references."""
         from models.base_model import BaseModel
-        # Define the mapping of class names to classes
-        data_classes = {"BaseModel": BaseModel}
+        from models.user import User
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.place import Place
+        from models.review import Review
+        
+        class_mapping = {
+        "BaseModel": BaseModel,
+        "User": User,
+        "State": State,
+        "City": City,
+        "Amenity": Amenity,
+        "Place": Place,
+        "Review": Review
+    }
+        """Deserializes JSON file into __objects."""
+
         try:
-            # Open the file for reading
-            with open(FileStorage.__file_path, "r", encoding="utf-8") as file:
-                # Load the data from the file
+            with open(self.__file_path, "r") as file:
                 data = json.load(file)
-                # Iterate over the values in the loaded data
-                for values in data.values():
-                    # Get the class name from the "__class__" attribute
-                    name = values["__class__"]
-                    # Get the corresponding class from the mapping
-                    obj = data_classes[name]
-                    # Create a new object and add it to the dictionary
-                    self.new(obj(**values))
+                for key, obj_dict in data.items():
+                    class_name = obj_dict["__class__"]
+                    class_object = class_mapping[class_name]
+                    obj = class_object(**obj_dict)
+                    self.__objects[key] = obj
         except FileNotFoundError:
-            # If the file is not found, return
-            return
+            pass
+
