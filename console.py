@@ -38,6 +38,10 @@ class HBNBCommand(cmd.Cmd):
         storage.save()    # Save to file.json
         print(obj.id)
 
+	def emptyline(self):
+        """Do nothing upon receiving an empty line."""
+        pass
+
     def do_show(self, line):
         """Usage: show <class> <id> or <class>.show(<id>)
         Display the string representation of a class instance of a given id.
