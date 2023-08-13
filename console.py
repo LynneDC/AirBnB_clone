@@ -9,6 +9,7 @@ from models.city import City
 from models.place import Place
 from models.amenity import Amenity
 from models.review import Review
+from models.engine.file_storage import FileStorage
 
 
 
@@ -34,16 +35,34 @@ class HBNBCommand(cmd.Cmd):
         return class_name, command_name
 
     def default(self, line):
-        class_command = self.parse_class_command(line)
-        if class_command:
-            class_name, command_name = class_command
-            command_method = getattr(self, "do_" + command_name, None)
-            if command_method:
-                command_method(class_name)
-            else:
-                print("*** Unknown syntax:", line)
+        """Default method called when input doesn't match any known command.
+        It will handle special commands like <class name>.all(), <class name>.count(), and <class name>.show(<id>)."""
+        line_parts = line.split('.')
+        if len(line_parts) != 2:
+            print("*** Unknown syntax: {}".format(line))
+            return
+        class_name, method_part = line_parts
+        method_name, _, params = method_part.partition('(')
+        params = params.rstrip(')')
+
+        if method_name == "all":
+            self.do_all(class_name)
+        elif method_name == "count":
+            self.do_count(class_name)
+        elif method_name == "show":
+            self.do_show(class_name, params.strip('"'))
         else:
-            print("*** Unknown syntax:", line)
+            print("*** Unknown syntax: {}".format(line))
+            
+    def do_count(self, class_name):
+        """Usage: <class name>.count()
+        Retrieve the number of instances of a given class."""
+        if class_name not in globals() or not issubclass(globals()[class_name], BaseModel):
+            print("** class doesn't exist **")
+            return
+        count = sum(isinstance(instance, globals()[class_name]) for instance in self.instances.values())
+        print(count)
+
 
     def do_create(self, line):
         """Usage: create <class>
@@ -92,7 +111,7 @@ class HBNBCommand(cmd.Cmd):
             return
         print(self.instances[instance_id])
 
-    # Implement other commands (destroy, all, update) here
+
 
     def do_quit(self, arg):
         """Quit command to exit the program."""
