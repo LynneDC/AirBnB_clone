@@ -17,6 +17,7 @@ class HBNBCommand(cmd.Cmd):
     Attributes:
         prompt (str): The command prompt.
     """
+
     prompt = "(hbnb) "
     instances = {}
 
@@ -29,15 +30,17 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         class_name = args[0]
-        if class_name not in globals() or not issubclass(globals()[class_name], BaseModel):
+        if class_name not in globals() or not issubclass(
+            globals()[class_name], BaseModel
+        ):
             print("** class doesn't exist **")
             return
         obj = globals()[class_name]()
         self.instances[obj.id] = obj
         storage.new(obj)  # Add to FileStorage
-        storage.save()    # Save to file.json
+        storage.save()  # Save to file.json
         print(obj.id)
-        
+
     def emptyline(self):
         """Do nothing upon receiving an empty line."""
         pass
@@ -51,7 +54,9 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         class_name = args[0]
-        if class_name not in globals() or not issubclass(globals()[class_name], BaseModel):
+        if class_name not in globals() or not issubclass(
+            globals()[class_name], BaseModel
+        ):
             print("** class doesn't exist **")
             return
         if len(args) < 2:
@@ -81,11 +86,16 @@ class HBNBCommand(cmd.Cmd):
         args = line.split()
         if args:
             class_name = args[0]
-            if class_name not in globals() or not issubclass(globals()[class_name], BaseModel):
+            if class_name not in globals() or not issubclass(
+                globals()[class_name], BaseModel
+            ):
                 print("** class doesn't exist **")
                 return
-            result = [str(instance) for instance in self.instances.values() if
-                      isinstance(instance, globals()[class_name])]
+            result = [
+                str(instance)
+                for instance in self.instances.values()
+                if isinstance(instance, globals()[class_name])
+            ]
         else:
             result = [str(instance) for instance in self.instances.values()]
         print(result)
@@ -98,7 +108,9 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         class_name = args[0]
-        if class_name not in globals() or not issubclass(globals()[class_name], BaseModel):
+        if class_name not in globals() or not issubclass(
+            globals()[class_name], BaseModel
+        ):
             print("** class doesn't exist **")
             return
         if len(args) < 2:
@@ -119,16 +131,18 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, line):
         """Usage: update <class> <id> <attribute_name> <attribute_value> or
-       <class>.update(<id>, <attribute_name>, <attribute_value>) or
-       <class>.update(<id>, <dictionary>)
-        Update a class instance of a given id by adding or updating
-        a given attribute key/value pair or dictionary."""
+        <class>.update(<id>, <attribute_name>, <attribute_value>) or
+        <class>.update(<id>, <dictionary>)
+         Update a class instance of a given id by adding or updating
+         a given attribute key/value pair or dictionary."""
         args = line.split()
         if not args:
             print("** class name missing **")
             return
         class_name = args[0]
-        if class_name not in globals() or not issubclass(globals()[class_name], BaseModel):
+        if class_name not in globals() or not issubclass(
+            globals()[class_name], BaseModel
+        ):
             print("** class doesn't exist **")
             return
         if len(args) < 2:

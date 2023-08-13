@@ -29,6 +29,7 @@ class BaseModel:
         else:
             self.id = str(uuid.uuid4())
             self.created_at = self.updated_at = datetime.now()
+            storage.new(self)
 
     def __str__(self):
         """Returns a human-readable string representation
@@ -41,12 +42,12 @@ class BaseModel:
         self.updated_at = datetime.now()
         storage.save()
 
+
     def to_dict(self):
-        """ Create a copy of the instance's dictionary"""
+        """Returns a dictionary representation of an instance."""
 
         dictionary = self.__dict__.copy()
-        dictionary["__class__"] = self.__class__.__name__
-        dictionary["created_at"] = self.created_at.isoformat()
-        dictionary["updated_at"] = self.updated_at.isoformat()
+        dictionary["__class__"] = type(self).__name__
+        dictionary["created_at"] = dictionary["created_at"].isoformat()
+        dictionary["updated_at"] = dictionary["updated_at"].isoformat()
         return dictionary
-
