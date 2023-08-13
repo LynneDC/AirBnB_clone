@@ -11,6 +11,7 @@ from models.amenity import Amenity
 from models.review import Review
 
 
+
 class HBNBCommand(cmd.Cmd):
     """Defines the HolbertonBnB command interpreter.
 
@@ -20,6 +21,29 @@ class HBNBCommand(cmd.Cmd):
 
     prompt = "(hbnb) "
     instances = {}
+    
+    def parse_class_command(self, line):
+        parts = line.split(".")
+        if len(parts) != 2 or not parts[1].endswith("()"):
+            return None
+        class_name = parts[0]
+        command_name = parts[1][:-2]  # Remove the trailing ()
+        if class_name not in globals() or not issubclass(globals()[class_name], BaseModel):
+            print("** class doesn't exist **")
+            return None
+        return class_name, command_name
+
+    def default(self, line):
+        class_command = self.parse_class_command(line)
+        if class_command:
+            class_name, command_name = class_command
+            command_method = getattr(self, "do_" + command_name, None)
+            if command_method:
+                command_method(class_name)
+            else:
+                print("*** Unknown syntax:", line)
+        else:
+            print("*** Unknown syntax:", line)
 
     def do_create(self, line):
         """Usage: create <class>
