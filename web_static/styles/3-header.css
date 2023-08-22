@@ -1,8 +1,14 @@
-/* header style */
+/* Header styles */
 header {
-  background-color: #FF0000;
-  height: 70px;
-  width: 100%;
-  color: white;
-  border-bottom: 1px solid #CCCCCC;
+    background-color: white;
+    height: 70px;
+    width: 100%;
+    border-bottom: 1px solid #CCCCCC;
+    display: flex;
+    align-items: center;
+}
+header.logo {
+	width 
+	background: url("/images/logo.png") center no-repeat;	
+    margin-left: 20px;
 }
