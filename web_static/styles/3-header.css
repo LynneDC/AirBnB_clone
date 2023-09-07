@@ -1,4 +1,4 @@
-/* Header styles */
+/* Header Styles */
 header {
     background-color: white;
     height: 70px;
@@ -6,9 +6,17 @@ header {
     border-bottom: 1px solid #CCCCCC;
     display: flex;
     align-items: center;
+    padding-left: 20px;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
-header.logo {
-	width 
-	background: url("/images/logo.png") center no-repeat;	
-    margin-left: 20px;
+
+.logo {
+    background-image: url('../images/logo.png');
+    width: 100px;
+    height: 50px;
+    display: flex;
+    align-items: center;
 }
